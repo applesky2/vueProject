@@ -1,0 +1,16 @@
+:root{
+    --active-color: rgb(64, 158, 255); 
+    }
+
+    .clearfix:after{
+        content: "020"; 
+        display: block; 
+        height: 0; 
+        clear: both; 
+        visibility: hidden;  
+        }
+      
+      .clearfix {
+        /* 触发 hasLayout */ 
+        zoom: 1; 
+        }

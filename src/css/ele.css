@@ -1,0 +1,10 @@
+.wrapper .el-breadcrumb__item:last-child .el-breadcrumb__inner {
+     color: var(--active-color);
+    }
+    .el-breadcrumb__item:last-child .el-breadcrumb__inner a {
+     color: var(--active-color);
+
+    }
+    .wrapper .el-breadcrumb__item:last-child .el-breadcrumb__inner:hover {
+     color: var(--active-color) !important;
+    }
