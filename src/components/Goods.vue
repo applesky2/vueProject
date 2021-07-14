@@ -5,8 +5,8 @@
         <span>Sort by: </span>
         <a class="sort">Default</a>
         <span
-          ><a class="price">Price</a
-          ><i class="el-icon-top" style="font-size: 20px; margin-left: 5px"></i
+          ><a class="price" @click="sortPrice()">Price</a
+          ><i :class="sortIcon" style="font-size: 20px; margin-left: 5px"></i
         ></span>
       </div>
     </div>
@@ -16,7 +16,7 @@
           <dt>PRICE:</dt>
           <dd
             v-for="item in priceList"
-            :key="item"
+            :key="item.id"
             @click="selectPrice(item.id)"
             :class="{ 'active-price': activePrice === item.id }"
           >
@@ -26,7 +26,7 @@
       </el-aside>
       <el-main>
         <el-row :gutter="8">
-          <el-col :span="6" v-for="o in goodsList" :key="o">
+          <el-col :span="6" v-for="o in goodsList" :key="o.id">
             <el-card :body-style="{ padding: '0px' }">
               <img :src="'/static/' + o.productImage" class="image" />
               <div style="padding: 14px">
@@ -48,7 +48,7 @@
           :page-sizes="[8, 16, 24, 32]"
           :page-size="8"
           layout="sizes, prev, pager, next"
-          :total="17"
+          :total="total"
         >
         </el-pagination>
       </el-main>
@@ -65,32 +65,36 @@ export default {
     return {
       goodsList: [],
       currentDate: "",
-      activePrice: "0",
+      activePrice: "all",
       currentPage: 1,
-      model:{
+      sort: true,
+      sortIcon: "el-icon-top",
+      total: 0,
+      model: {
         page: 1,
         pageSize: 8,
-        sort: 1
+        sort: 1,
+        priceLevel: "all",
       },
       priceList: [
         {
-          id: "0",
+          id: "all",
           label: "ALL",
         },
         {
-          id: "1",
+          id: "0",
           label: "0.00 - 100.00",
         },
         {
-          id: "2",
+          id: "1",
           label: "100.00 - 500.00",
         },
         {
-          id: "3",
+          id: "2",
           label: "500.00 - 1000.00",
         },
         {
-          id: "4",
+          id: "3",
           label: "1000.00 - 5000.00",
         },
       ],
@@ -100,16 +104,34 @@ export default {
   computed: {},
   methods: {
     getGoods() {
-      axios.get("/goods",{
-        params: this.model
-      }).then((res) => {
-        const data = res.data;
-        this.goodsList = data.result.list;
-        console.log(this.goodsList);
-      });
+      axios
+        .get("/goods", {
+          params: this.model,
+        })
+        .then((res) => {
+          const data = res.data;
+          this.goodsList = data.result.list;
+          if (this.model.priceLevel === "all") {
+            this.total = 17;
+          } else {
+            this.total = this.goodsList.length;
+          }
+          console.log(this.goodsList);
+        });
+    },
+    sortPrice() {
+      this.sort = !this.sort;
+      this.model.sort = this.sort ? 1 : -1;
+      this.sortIcon = this.sort ? "el-icon-top" : "el-icon-bottom";
+      this.model.page = 1;
+      this.currentPage = 1;
+      this.getGoods();
     },
     selectPrice(id) {
-      this.activePrice = id || "0";
+      this.activePrice = id || "all";
+      this.model.page = 1;
+      this.model.priceLevel = id;
+      this.getGoods();
     },
     handleSizeChange(val) {
       this.model.pageSize = val;
@@ -118,8 +140,7 @@ export default {
     handleCurrentChange(val) {
       this.model.page = val;
       this.getGoods();
-    }
-
+    },
   },
   created() {},
   mounted() {
