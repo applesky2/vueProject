@@ -14,3 +14,9 @@
         /* 触发 hasLayout */ 
         zoom: 1; 
         }
+        .mr8 {
+          margin-right: 8px;
+        }
+        .active {
+          color: var(--active-color);
+        }

@@ -9,8 +9,9 @@
         ><span class="logo-title">商城</span>
       </div>
       <div class="right-header">
-        <span></span>
-        <span class="login-header" @click="login()">Login</span>
+        <span v-if="nickName" class="login-header mr8 active">{{nickName}}</span>
+        <span class="login-header" @click="login()" v-if="!nickName">Login</span>
+        <span class="login-header" @click="loginOut()" v-if="nickName">LoginOut</span>
         <span
           ><i class="el-icon-shopping-cart-2" style="font-size: 50px"></i
         ></span>
@@ -78,9 +79,10 @@ export default {
     };
     return {
       dialogVisible: false,
+      nickName:"",
       ruleForm: {
-        pass: "",
-        userName: "",
+        pass: "123456",
+        userName: "admin",
       },
       rules: {
         pass: [{ validator: validatePass, trigger: "blur" }],
@@ -105,6 +107,7 @@ export default {
         const res = response.data;
         this.dialogVisible = false;
         if (res.status === '0') {
+          this.nickName = res.result.userName;
           this.$message({
           message: '登录成功',
           type: 'success'
@@ -126,6 +129,18 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    loginOut() {
+      axios.post('/users/logout').then((response)=>{
+        const res = response.data;
+        if (res.status === '0') {
+          this.nickName = '';
+          this.$message({
+          message: '退出登录成功',
+          type: 'success'
+        });
+        }
+      })
+    }
   },
   created() {},
   mounted() {},
@@ -161,7 +176,7 @@ export default {
   float: right;
 }
 .login-header {
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 600;
   cursor: pointer;
 }
