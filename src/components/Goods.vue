@@ -35,7 +35,7 @@
                 >
                 <div class="bottom clearfix">
                   <span class="sale-price">{{ o.salePrice }}￥</span>
-                  <el-button type="text" class="button">加入购物车</el-button>
+                  <el-button type="text" class="button" @click="addCart(o.productId)">加入购物车</el-button>
                 </div>
               </div>
             </el-card>
@@ -141,6 +141,17 @@ export default {
       this.model.page = val;
       this.getGoods();
     },
+    addCart(id){
+      axios.post('/goods/addCart', {
+        productId: id
+      }).then((res) => {
+        if (res.data.status == '0') {
+          alert('加入成功');
+        } else {
+          alert('msg'+ res.msg)
+        }
+      })
+    }
   },
   created() {},
   mounted() {

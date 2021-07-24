@@ -57,4 +57,72 @@ router.get('/', function (req, res, next) {
         }
     })
 })
+
+router.post("/addCart", function(req, res, next){
+const userId = '100000077';
+const productId = req.body.productId;
+const User = require('../models/user');
+User.findOne({userId:userId}, function(err, userDoc){
+    if (err) {
+        res.json({
+            status:'1', //报错
+            msg: err.message
+        })
+    } else {
+        if (userDoc) {
+            let goodsItem = '';
+            userDoc.cartList.forEach((item) => {
+                if(item.productId === productId){
+                    goodsItem = item;
+                    item.productNum ++;
+                }
+            });
+            if (goodsItem) {
+                userDoc.save(function(err2,doc2){
+                    if (err2){
+                        res.json({
+                            status:'1',
+                            msg: err2.message
+                        })
+                    }else{
+                        res.json({
+                            status:'0',
+                            msg: 'susscess'
+                        })
+                    }
+                })
+            } else{
+                Goods.findOne({productId: productId}, function(err1, doc){
+                    if (err1) {
+                        res.json({
+                            status:'1',
+                            msg: err1.message
+                        })
+                    } else {
+                        if (doc) {
+                            doc.productNum = 1;
+                            doc.checked = 1;
+                            userDoc.cartList.push(doc); //商品信息加入用户里
+                            userDoc.save(function(err2,doc2){
+                                if (err2){
+                                    res.json({
+                                        status:'1',
+                                        msg: err2.message
+                                    })
+                                }else{
+                                    res.json({
+                                        status:'0',
+                                        msg: 'susscess'
+                                    })
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+})
+})
 module.exports = router;
