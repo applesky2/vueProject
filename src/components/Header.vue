@@ -140,10 +140,20 @@ export default {
         });
         }
       })
+    },
+    checkLogin(){
+      axios.get('/users/checkLogin').then((response)=>{
+        const res = response.data;
+        if (res.status === '0') {
+          this.nickName = res.result;
+        }
+      })
     }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.checkLogin();
+  },
 };
 </script>
 <style scoped>

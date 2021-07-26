@@ -105,7 +105,7 @@ export default {
   methods: {
     getGoods() {
       axios
-        .get("/goods", {
+        .get("/goods/list", {
           params: this.model,
         })
         .then((res) => {
@@ -146,9 +146,12 @@ export default {
         productId: id
       }).then((res) => {
         if (res.data.status == '0') {
-          alert('加入成功');
+           this.$message({
+          message: '加入购物车成功',
+          type: 'success'
+        });
         } else {
-          alert('msg'+ res.msg)
+          this.$message.error(res.data.msg);
         }
       })
     }
