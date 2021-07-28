@@ -39,6 +39,7 @@
             type="password"
             v-model="ruleForm.pass"
             autocomplete="off"
+            @keyup.enter="login()"
           ></el-input>
         </el-form-item>
         <el-form-item>

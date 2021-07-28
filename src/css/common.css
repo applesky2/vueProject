@@ -17,6 +17,21 @@
         .mr8 {
           margin-right: 8px;
         }
+        .mr10 {
+          margin-right: 10px;
+        }
+        .ml10 {
+          margin-left: 10px;
+        }
+        .ml20 {
+          margin-left: 20px;
+        }
+        .mt20{
+          margin-top: 20px;
+        }
+        .mb20{
+          margin-bottom: 20px;
+        }
         .active {
           color: var(--active-color);
         }
