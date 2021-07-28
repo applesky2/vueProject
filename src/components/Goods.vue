@@ -116,7 +116,6 @@ export default {
           } else {
             this.total = this.goodsList.length;
           }
-          console.log(this.goodsList);
         });
     },
     sortPrice() {

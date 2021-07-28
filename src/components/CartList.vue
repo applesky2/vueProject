@@ -39,8 +39,8 @@
           </template>
         </el-table-column>
         <el-table-column label="EDIT" width="200">
-          <template>
-            <i class="el-icon-delete" style="font-size: 20px"></i>
+          <template slot-scope="scope">
+            <i class="el-icon-delete" style="font-size: 20px" @click="open(scope.row.productId)"></i>
           </template>
         </el-table-column>
       </el-table>
@@ -100,12 +100,35 @@ export default {
       this.multipleSelection = val;
     },
     handleChange() {},
+    delProduct(productId) {
+        axios.post('/users/cartDel', {
+            productId:productId
+        }).then((response)=>{
+            if(response.data.status === '0'){
+               this.$message({
+                   message:"删除商品成功",
+                   type:"success"
+               });
+               this.init();
+            }
+        })
+    },
     init() {
       axios.get("/users/cartList").then((response) => {
         const res = response.data;
         this.tableData = res.result;
       });
     },
+    open(productId) {
+        this.$confirm('确定要删除该商品?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+         this.delProduct(productId);
+        }).catch(() => {
+        });
+      }
   },
   mounted() {
     this.init();

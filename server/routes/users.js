@@ -95,4 +95,29 @@ router.get('/cartList', function (req, res, next) {
   })
 })
 
+router.post('/cartDel', function(req,res,next){
+  const userId = req.cookies.userId;
+  const productId = req.body.productId;
+  User.update({userId:userId},
+    {$pull:{
+    'cartList':{
+      'productId': productId
+    }
+  }}, function(err,doc){
+    if(err){
+      res.json({
+        status:"1",
+        msg:err.message,
+        result:""
+      })
+    } else {
+      res.json({
+        status:'0',
+        msg:"",
+        result:'success'
+      })
+    }
+  });
+
+})
 module.exports = router;
