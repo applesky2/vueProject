@@ -13,7 +13,7 @@
         <span class="login-header" @click="login()" v-if="!nickName">Login</span>
         <span class="login-header" @click="loginOut()" v-if="nickName">LoginOut</span>
         <span
-          ><i class="el-icon-shopping-cart-2" style="font-size: 50px"></i
+          ><i class="el-icon-shopping-cart-2" style="font-size: 50px;cursor:pointer;" @click="goToCart"></i
         ></span>
       </div>
     </div>
@@ -149,6 +149,9 @@ export default {
           this.nickName = res.result;
         }
       })
+    },
+    goToCart() {
+      this.$router.push({name:'Cart'});
     }
   },
   created() {},

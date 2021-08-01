@@ -53,7 +53,7 @@
       <div class="footer-left">
         <div>
           <span class="item-total">item total:</span>
-          <span class="total-price">2499</span>
+          <span class="total-price">{{totalPrice}}</span>
         </div>
       </div>
       <div class="footer-right">CHECKOUT</div>
@@ -87,6 +87,7 @@ export default {
         },
       ],
       multipleSelection: [],
+      totalPrice:0
     };
   },
 
@@ -107,9 +108,20 @@ export default {
         this.$refs.multipleTable.toggleRowSelection(row, true);
       }
       this.handleChange(row);
+      this.getTotalPrice(this.multipleSelection);
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      this.getTotalPrice(val);
+    },
+    getTotalPrice(data) {
+        let price = 0;
+        data.forEach((ele)=>{
+            if (ele.checked === '1') {
+                price +=ele.productNum*ele.salePrice;
+            }
+        })
+        this.totalPrice = price;
     },
     handleChange(item) {
       axios
@@ -118,7 +130,9 @@ export default {
           productNum: item.productNum,
           checked: item.checked === "1" ? "0" : "1",
         })
-        .then((response) => {});
+        .then((response) => {
+            this.init();
+        });
     },
     delProduct(productId) {
       axios
@@ -161,6 +175,7 @@ export default {
           this.$refs.multipleTable.toggleRowSelection(ele, isCheck);
         });
       });
+      this.getTotalPrice(data);
     },
   },
   mounted() {
