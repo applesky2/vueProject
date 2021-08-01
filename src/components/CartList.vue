@@ -7,6 +7,7 @@
         :data="tableData"
         tooltip-effect="dark"
         style="width: 100%"
+        @row-click="rowClick"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="70"> </el-table-column>
@@ -26,9 +27,8 @@
             <el-input-number
               size="mini"
               v-model="scope.row.productNum"
-              @change="handleChange"
+              @change="handleChange(scope.row)"
               :min="1"
-              :max="10"
               label="描述文字"
             ></el-input-number>
           </template>
@@ -40,7 +40,11 @@
         </el-table-column>
         <el-table-column label="EDIT" width="200">
           <template slot-scope="scope">
-            <i class="el-icon-delete" style="font-size: 20px" @click="open(scope.row.productId)"></i>
+            <i
+              class="el-icon-delete"
+              style="font-size: 20px"
+              @click="open(scope.row.productId)"
+            ></i>
           </template>
         </el-table-column>
       </el-table>
@@ -96,39 +100,68 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
+    rowClick(row) {
+      if (row.checked === "1") {
+        this.$refs.multipleTable.toggleRowSelection(row, false);
+      } else {
+        this.$refs.multipleTable.toggleRowSelection(row, true);
+      }
+      this.handleChange(row);
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    handleChange() {},
-    delProduct(productId) {
-        axios.post('/users/cartDel', {
-            productId:productId
-        }).then((response)=>{
-            if(response.data.status === '0'){
-               this.$message({
-                   message:"删除商品成功",
-                   type:"success"
-               });
-               this.init();
-            }
+    handleChange(item) {
+      axios
+        .post("/users/updateCart", {
+          productId: item.productId,
+          productNum: item.productNum,
+          checked: item.checked === "1" ? "0" : "1",
         })
+        .then((response) => {});
+    },
+    delProduct(productId) {
+      axios
+        .post("/users/cartDel", {
+          productId: productId,
+        })
+        .then((response) => {
+          if (response.data.status === "0") {
+            this.$message({
+              message: "删除商品成功",
+              type: "success",
+            });
+            this.init();
+          }
+        });
     },
     init() {
       axios.get("/users/cartList").then((response) => {
         const res = response.data;
         this.tableData = res.result;
+        this.initCheck(this.tableData);
       });
     },
     open(productId) {
-        this.$confirm('确定要删除该商品?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-         this.delProduct(productId);
-        }).catch(() => {
+      this.$confirm("确定要删除该商品?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.delProduct(productId);
+        })
+        .catch(() => {});
+    },
+    initCheck(data) {
+        //表格是请求数据渲染出来的，可能那时候表格还没完全渲染完。所以要借用$nextTick
+      this.$nextTick(() => {
+        data.forEach((ele) => {
+          const isCheck = ele.checked === "1";
+          this.$refs.multipleTable.toggleRowSelection(ele, isCheck);
         });
-      }
+      });
+    },
   },
   mounted() {
     this.init();

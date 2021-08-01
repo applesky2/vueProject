@@ -94,7 +94,7 @@ router.get('/cartList', function (req, res, next) {
     }
   })
 })
-
+//删除商品
 router.post('/cartDel', function(req,res,next){
   const userId = req.cookies.userId;
   const productId = req.body.productId;
@@ -119,5 +119,32 @@ router.post('/cartDel', function(req,res,next){
     }
   });
 
+})
+
+router.post('/updateCart',function(req,res,next){
+  const userId = req.cookies.userId;
+  const productId = req.body.productId;
+  const productNum = req.body.productNum;
+  const checked = req.body.checked;
+  User.update({"userId": userId,
+    'cartList.productId': productId
+  }, {
+    'cartList.$.productNum': productNum,
+    'cartList.$.checked': checked,
+  }, function(err,doc){
+    if (err) {
+      res.json({
+        status:'1',
+        msg:err.message,
+        result:""
+      })
+    } else {
+      res.json({
+        status:'0',
+        msg:"",
+        result:"success"
+      })
+    }
+  })
 })
 module.exports = router;
