@@ -121,6 +121,7 @@ router.post('/cartDel', function(req,res,next){
 
 })
 
+//更新产品状态
 router.post('/updateCart',function(req,res,next){
   const userId = req.cookies.userId;
   const productId = req.body.productId;
@@ -146,5 +147,103 @@ router.post('/updateCart',function(req,res,next){
       })
     }
   })
+})
+
+//获取地址列表
+router.get('/addressList', function(req,res,next){
+  const userId= req.cookies.userId;
+  User.findOne({userId:userId}, function(err,doc){
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message,
+        result:''
+      })
+    } else {
+      if (doc){
+        res.json({
+          status:'1',
+          msg:"",
+          result:doc.addressList
+        })
+      }
+    }
+  })
+})
+
+//设置默认地址
+router.post('/setDefault', function(req,res,next){
+  const userId = req.cookies.userId;
+  const addressId= req.body.addressId;
+  if (!addressId) {
+    res.json({
+      status:'1003',
+      msg:'addressId is null',
+      result:''
+    })
+  } else {
+    User.findOne({userId:userId}, function(err,doc){
+      if (err) {
+        res.json({
+          status:'1',
+          msg:err.message,
+          result:''
+        })
+      } else {
+        const addressList = doc.addressList;
+        addressList.forEach((item)=>{
+          if (item.addressId == addressId) {
+            item.isDefault = true;
+          } else {
+            item.isDefault = false;
+          }
+        })
+        doc.save(function(err1,doc1){
+          if (err1){
+            res.json({
+              status:'1',
+              msg:err.message,
+              result:''
+            })
+          } else {
+            res.json({
+              status:'0',
+              msg:'',
+              result:''
+            })
+          }
+        })
+      }
+    })
+    
+  }
+})
+//删除地址
+router.post('/deleteAdress', function(req,res,next){
+  const userId = req.cookies.userId;
+  const addressId = req.body.addressId;
+  User.update({
+    userId:userId
+  },{
+    $pull:{
+      'addressList':{
+        'addressId':addressId
+      }
+    }
+  }, function (err,doc) {
+      if(err){
+        res.json({
+            status:'1',
+            msg:err.message,
+            result:''
+        });
+      }else{
+        res.json({
+          status:'0',
+          msg:'',
+          result:''
+        });
+      }
+  });
 })
 module.exports = router;

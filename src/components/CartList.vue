@@ -56,7 +56,7 @@
           <span class="total-price">{{totalPrice}}</span>
         </div>
       </div>
-      <div class="footer-right">CHECKOUT</div>
+      <div class="footer-right" @click="checkout">CHECKOUT</div>
     </div>
   </div>
 </template>
@@ -177,6 +177,9 @@ export default {
       });
       this.getTotalPrice(data);
     },
+    checkout() {
+        this.$router.push({name:'Adress'});
+    }
   },
   mounted() {
     this.init();
@@ -213,6 +216,7 @@ export default {
   text-align: center;
   color: white;
   width: 10%;
+  cursor: pointer;
 }
 .item-total {
   color: rgb(146, 143, 143);
