@@ -178,7 +178,7 @@ export default {
       this.getTotalPrice(data);
     },
     checkout() {
-        this.$router.push({name:'Adress'});
+        this.$router.push({path:`/adress/step=0&orderId=null`});
     }
   },
   mounted() {

@@ -20,7 +20,7 @@ export default new Router({
       component: Cart
     },
     {
-      path:'/adress',
+      path:'/adress/step=:step&orderId=:orderId',
       name: 'Adress',
       component: Adress
     }
